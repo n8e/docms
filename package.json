@@ -1,0 +1,29 @@
+{
+  "name": "docms",
+  "version": "1.0.0",
+  "description": "document management system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-nmartin/docms.git"
+  },
+  "keywords": [
+    "ODM",
+    "document",
+    "management",
+    "system"
+  ],
+  "author": "NM",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andela-nmartin/docms/issues"
+  },
+  "homepage": "https://github.com/andela-nmartin/docms#readme",
+  "dependencies": {
+    "jasmine-node": "^1.14.5",
+    "mongoose": "^4.1.11"
+  }
+}
