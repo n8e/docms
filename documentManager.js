@@ -3,16 +3,16 @@ var mongoose = require('mongoose');
 var User = require('./model/users');
 var Document = require('./model/documents');
 // var Methods = require('methods');
-
-function documentManager() {
+module.exports = function() {
   // to get the mongo cluster of all the users stored on the db
-  this.getAllUsers = function() {
+  getAllUsers = function() {
     mongoose.connect('mongodb://localhost/docms');
     User.find(function (err, users) {
-      if (err) return console.error(err);
-      console.log(users);
+      if (err) console.error(err);
+      return users;
     });
     // mongoose.connection.close();
+
   };
 
   // // to get the mongo cluster of all the user roles
@@ -33,7 +33,4 @@ function documentManager() {
 
   // // to get the mongo cluster of all the documents filtered by date
   // this.getAllDocumentsByDate = function() {};
-}
-
-var dm = new documentManager();
-dm.getAllUsers();
+};
