@@ -11,4 +11,6 @@ MongoDB needs to be installed on your local machine. Along with it, the `mongoos
 
 To run the tests, you'll require to install `jasmine-node`, as `npm install jasmine-node --save`. Once completed, the Spec file is executed by running `jasmine-node documentManagerSpec.js`.
 
+There is a gulpfile to automate these tasks so thst to run the project, you only need to run `mongod` and `gulp` on the console.
+
 
