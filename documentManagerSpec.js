@@ -1,8 +1,5 @@
-// beforeEach(function() {
-//     var docMan = require('./documentManager');
-//     var dm = new documentManager();
-// });
 var documentManager = require('./documentManager');
+var dm = new documentManager();
 
 describe("User", function() {
     it("validates that a new user created is unique", function() {
@@ -18,7 +15,7 @@ describe("User", function() {
     });
 
     it("validates that all users are returned when getAllUsers is called.", function() {
-        expect(getAllUsers().length).not.toEqual(0);
+        expect(dm.getAllUsers()).toBeDefined();
     });
 });
 
