@@ -18,17 +18,17 @@ module.exports = function() {
   this.createUser = function() {
     var user1 = new User({
       name: {
-        first: 'Nate',
-        last: 'Martin'
+        first: 'Martin',
+        last: 'Mwangi'
       },
-      username: 'natemmartin',
-      email: 'nate.martin@andela.com',
+      username: 'andela-nmartin',
+      email: 'godmetweenciati@gmail.com',
       password: '12345'
     });
 
     User.find({
       email: user1.email
-    }, function(err, docs) {
+    }, function(err, docs, cb) {
       if (docs.length) {
         cb('Email exists already', null);
       } else {
