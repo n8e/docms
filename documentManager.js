@@ -2,17 +2,55 @@
 var mongoose = require('mongoose');
 var User = require('./model/users');
 var Document = require('./model/documents');
+
+// connect to the database
 mongoose.connect('mongodb://localhost/docms');
-// var Methods = require('methods');
+// mongoose.connection.db.dropDatabase(function(err) {
+//   console.log('dropped collection %s, %s ', users, err);
+//   users = '';
+//   mongoose.connection.close();
+//   initialized = false;
+//   cb();
+// });
+
 module.exports = function() {
+  // to add a user to the db
+  this.createUser = function() {
+    var user1 = new User({
+      name: {
+        first: 'Nate',
+        last: 'Martin'
+      },
+      username: 'natemmartin',
+      email: 'nate.martin@andela.com',
+      password: '12345'
+    });
+
+    User.find({
+      email: user1.email
+    }, function(err, docs) {
+      if (docs.length) {
+        cb('Email exists already', null);
+      } else {
+        user1.save(function(err, userObj) {
+          cb(err, user);
+          if (err) {
+            console.log(err);
+          } else {
+            return ('saved successfully:' + userObj);
+          }
+        });
+      }
+    });
+
+  };
+
   // to get the mongo cluster of all the users stored on the db
   this.getAllUsers = function() {
     return User.find(function (err, users) {
       if (err) return console.error(err);
       return users;
     });
-    // mongoose.connection.close();
-
   };
 
   // // to get the mongo cluster of all the user roles
@@ -21,7 +59,7 @@ module.exports = function() {
   // // to get the mongo cluster of all the documents stored
   // this.getAllDocuments = function() {
   //   mongoose.connect('mongodb://localhost/docms');
-  //   Document.find(function (err, documents) {
+  //   Document.find(function(err, documents) {
   //     if (err) return console.error(err);
   //     console.log(documents);
   //   });

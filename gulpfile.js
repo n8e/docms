@@ -1,5 +1,5 @@
 var gulp = require('gulp'),
-    nodemon = require('gulp-nodemon')
+    nodemon = require('gulp-nodemon'),
     jasmineNode = require('gulp-jasmine-node');
 
 gulp.task('develop', function () {
@@ -16,6 +16,6 @@ gulp.task('test', function () {
 });
 
 gulp.task('default', ['develop', 'test'], function(){
-  gulp.watch("documentManager.js", ['develop']);
-  gulp.watch("documentManagerSpec.js", ['test']);
+  gulp.watch("documentManager.js", ['develop', 'default']);
+  gulp.watch("documentManagerSpec.js", ['test', 'default']);
 });
