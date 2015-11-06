@@ -24,8 +24,8 @@ module.exports = function(app, express) {
   api.post('/users', function(req, res) {
     var user = new User({
       name: {
-        first: req.body.name.first,
-        last: req.body.name.last
+        first: req.body.firstname,
+        last: req.body.lastname
       },
       email: req.body.email,
       username: req.body.username,
@@ -87,11 +87,13 @@ module.exports = function(app, express) {
       }
     });
   });
+
+  // ______________________________________________________
   // middleware
   api.use(function(req, res, next) {
     console.log("Somebody just came to our app!");
-    var token = req.body.token || req.params || req.headers['x-access-token'];
-
+    var token = req.body.token || req.params.token || req.headers['x-access-token'];
+    console.log(token);
     // check if token exists
     if (token) {
       jsonwebtoken.verify(token, secretKey, function(err, decoded) {
@@ -112,7 +114,8 @@ module.exports = function(app, express) {
       });
     }
   });
-
+  
+  // ______________________________________________________
   // Destination B, checking for a legitimate token
 
 
@@ -148,7 +151,8 @@ module.exports = function(app, express) {
     });
   });
 
-  api.get('/users/<id>', function(req, res) {
+  api.get('/users/:id', function(req, res) {
+    var id = req.param('id');
     User.find({
       _id: id
     }, function(err, users) {
@@ -160,8 +164,20 @@ module.exports = function(app, express) {
     });
   });
 
-  api.put('/users/<id>', function(req, res) {
+  api.put('/users/:id', function(req, res) {
     User.update({
+      _id: User.id
+    }, function(err, users) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.send(users);
+    });
+  });
+
+  api.delete('/users/:id', function(req, res) {
+    User.remove({
       _id: id
     }, function(err, users) {
       if (err) {
@@ -172,19 +188,7 @@ module.exports = function(app, express) {
     });
   });
 
-  api.delete('/users/<id>', function(req, res) {
-    User.update({
-      _id: id
-    }, function(err, users) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.send(users);
-    });
-  });
-
-  api.get('/documents/<id>', function(req, res) {
+  api.get('/documents/:id', function(req, res) {
     Document.find({
       _id: id
     }, function(err, documents) {
@@ -196,7 +200,7 @@ module.exports = function(app, express) {
     });
   });
 
-  api.put('/documents/<id>', function(req, res) {
+  api.put('/documents/:id', function(req, res) {
     Document.update({
       _id: id
     }, function(err, documents) {
@@ -208,7 +212,7 @@ module.exports = function(app, express) {
     });
   });
 
-  api.delete('/documents/<id>', function(req, res) {
+  api.delete('/documents/:id', function(req, res) {
     Document.update({
       _id: id
     }, function(err, documents) {
@@ -220,7 +224,7 @@ module.exports = function(app, express) {
     });
   });
 
-  api.get('/users/<id>/documents', function(req, res) {
+  api.get('/users/:id/documents', function(req, res) {
     Document.find({
       ownerId: _id
     }, function(err, documents) {
@@ -233,7 +237,7 @@ module.exports = function(app, express) {
   });
 
   api.get('/users/logout', function(req, res) {
-    delete req.body.token;
+    delete req.params;
     res.redirect('/login');
   });
 
