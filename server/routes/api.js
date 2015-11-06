@@ -114,7 +114,7 @@ module.exports = function(app, express) {
       });
     }
   });
-  
+
   // ______________________________________________________
   // Destination B, checking for a legitimate token
 
@@ -165,18 +165,45 @@ module.exports = function(app, express) {
   });
 
   api.put('/users/:id', function(req, res) {
-    User.update({
-      _id: User.id
-    }, function(err, users) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.send(users);
-    });
+    var id = req.param('id');
+    User.findOneAndUpdate({
+        _id: id
+      }, {
+        name: {
+          first: req.body.firstname,
+          last: req.body.lastname
+        },
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
+        role: req.body.role
+      }, {
+        name: {
+          first: req.body.firstname,
+          last: req.body.lastname
+        },
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
+        role: req.body.role
+      },
+
+      function(err, users) {
+        if (err) {
+          res.send(err);
+          return;
+        } else {
+          // res.send(users);
+          res.json({
+            success: true,
+            message: "Successfully updated User!"
+          });
+        }
+      });
   });
 
   api.delete('/users/:id', function(req, res) {
+    var id = req.param('id');
     User.remove({
       _id: id
     }, function(err, users) {

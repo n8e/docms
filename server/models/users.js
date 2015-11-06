@@ -23,7 +23,10 @@ var UserSchema = new Schema({
     required: true,
     select: false
   },
-  role: String
+  role: {
+    type: String,
+    required: true
+  }
 });
 
 UserSchema.pre('save', function(next) {
