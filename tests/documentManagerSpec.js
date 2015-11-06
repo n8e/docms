@@ -3,7 +3,7 @@ var dm = new documentManager();
 
 describe("User", function() {
   it("validates that a new user created is unique", function() {
-    expect(true).toBe(true);
+    expect(dm.createUser()).toBeDefined();
   });
 
   it("validates that a new user created has a role defined", function() {
