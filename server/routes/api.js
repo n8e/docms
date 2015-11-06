@@ -21,21 +21,16 @@ function createToken(user) {
 module.exports = function(app, express) {
   var api = express.Router();
 
-  api.get('/all_stories', function(req, res) {
-    Story.find({}, function(err, stories) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.json(stories);
-    });
-  });
-
-  api.post('/signup', function(req, res) {
+  api.post('/users', function(req, res) {
     var user = new User({
-      name: req.body.name,
+      name: {
+        first: req.body.name.first,
+        last: req.body.name.last
+      },
+      email: req.body.email,
       username: req.body.username,
-      password: req.body.password
+      password: req.body.password,
+      role: req.body.role
     });
     var token = createToken(user);
     user.save(function(err) {
@@ -63,7 +58,7 @@ module.exports = function(app, express) {
     });
   });
 
-  api.post('/login', function(req, res) {
+  api.post('/users/login', function(req, res) {
     User.findOne({
       username: req.body.username
     }).select('name username password').exec(function(err, user) {
@@ -95,7 +90,7 @@ module.exports = function(app, express) {
   // middleware
   api.use(function(req, res, next) {
     console.log("Somebody just came to our app!");
-    var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+    var token = req.body.token || req.params || req.headers['x-access-token'];
 
     // check if token exists
     if (token) {
@@ -119,6 +114,40 @@ module.exports = function(app, express) {
   });
 
   // Destination B, checking for a legitimate token
+
+
+  api.get('/documents', function(req, res) {
+    Document.find({}, function(err, documents) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.json(documents);
+    });
+  });
+
+  api.post('/documents', function(req, res) {
+    var document = new Document({
+      ownerId: req.body.ownerId,
+      title: req.body.title,
+      content: req.body.content,
+      dateCreated: req.body.dateCreated,
+      lastModified: req.body.lastModified
+    });
+    var token = createToken(user);
+    document.save(function(err) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+
+      res.json({
+        success: true,
+        message: 'Document has been created!'
+      });
+    });
+  });
+
 
   api.route('/')
     .post(function(req, res) {
@@ -159,47 +188,7 @@ module.exports = function(app, express) {
 //.............................................
 
 
-// // more routes for our API will happen here
-// router.route('/users')
-
-// // create a user (accessed at POST http://localhost:8080/api/user)
-// .post(function(req, res) {
-
-//   var user = new User(); // create a new instance of the Bear model
-//   user.name = req.body.name; // set the bears name (comes from the request)
-
-//   // save the bear and check for errors
-//   user.save(function(err) {
-//     if (err)
-//       res.send(err);
-
-//     res.json({
-//       message: 'User created!'
-//     });
-//   });
-
-// });
-
-// // REGISTER OUR ROUTES -------------------------------
-// // all of our routes will be prefixed with /api
-// app.use('/api', router);
-
-// /////////////////// end routers
-
-// app.route('/users/login')
-//   .post(function(req, res) {
-//     res.send('Add a book');
-//   });
-
 // app.route('/users/logout')
-//   .post(function(req, res) {
-//     res.send('Add a book');
-//   });
-
-// app.route('/users/')
-//   .get(function(req, res) {
-//     res.send('Get a random book');
-//   })
 //   .post(function(req, res) {
 //     res.send('Add a book');
 //   });
@@ -238,7 +227,3 @@ module.exports = function(app, express) {
 //   .delete(function(req, res) {
 //     res.send('Add a book');
 //   });
-
-
-
-// module.exports = app;
