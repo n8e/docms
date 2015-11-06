@@ -3,19 +3,19 @@ var gulp = require('gulp'),
     jasmineNode = require('gulp-jasmine-node');
 
 gulp.task('develop', function () {
-  nodemon({ script: 'documentManager.js' })
+  nodemon({ script: 'server.js' })
     .on('restart', function () {
-      console.log('restarted!')
+      console.log('restarted server!')
     })
 })
 
 gulp.task('test', function () {
-    return gulp.src(['documentManagerSpec.js']).pipe(jasmineNode({
+    return gulp.src(['./tests/documentManagerSpec.js']).pipe(jasmineNode({
         timeout: 10000
     }));
 });
 
 gulp.task('default', ['develop', 'test'], function(){
-  gulp.watch("documentManager.js", ['develop', 'default']);
-  gulp.watch("documentManagerSpec.js", ['test', 'default']);
+  gulp.watch("server.js", ['develop', 'default']);
+  gulp.watch("./tests/documentManagerSpec.js", ['test', 'default']);
 });

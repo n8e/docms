@@ -1,12 +1,7 @@
-var documentManager = require('./documentManager');
+var documentManager = require('../app/directives/documentManager');
 var dm = new documentManager();
 
 describe("User", function() {
-  it("checks that the user is saved", function() {
-    dm.createUser();
-    expect(userObj.email).toBeDefined();
-  });
-
   it("validates that a new user created is unique", function() {
     expect(true).toBe(true);
   });
