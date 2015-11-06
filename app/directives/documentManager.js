@@ -19,12 +19,13 @@ module.exports = function() {
   this.createUser = function(cb) {
     var user1 = new User({
       name: {
-        first: 'Martin',
-        last: 'Mwangi'
+        first: 'Nate',
+        last: 'Martin'
       },
-      username: 'andela-nmartin',
-      email: 'godmetweenciati@gmail.com',
-      password: '12345'
+      username: 'natemmartin',
+      email: 'nate.martin@andela.com',
+      password: '12345',
+      role: 'administrator'
     });
 
     user1.save(function(err, userObj) {
