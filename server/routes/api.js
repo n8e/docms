@@ -148,35 +148,94 @@ module.exports = function(app, express) {
     });
   });
 
-
-  api.route('/')
-    .post(function(req, res) {
-      var story = new Story({
-        creator: req.decoded.id,
-        content: req.body.content
-      });
-      story.save(function(err) {
-        if (err) {
-          res.send(err);
-          return;
-        }
-        io.emit('story', newStory);
-        res.json({
-          message: "New Story Created!"
-        });
-      });
-    })
-    .get(function(req, res) {
-      Story.find({
-        creator: req.decoded.id
-      }, function(err, stories) {
-        if (err) {
-          res.send(err);
-          return;
-        }
-        res.send(stories);
-      });
+  api.get('/users/<id>', function(req, res) {
+    User.find({
+      _id: id
+    }, function(err, users) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.send(users);
     });
+  });
+
+  api.put('/users/<id>', function(req, res) {
+    User.update({
+      _id: id
+    }, function(err, users) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.send(users);
+    });
+  });
+
+  api.delete('/users/<id>', function(req, res) {
+    User.update({
+      _id: id
+    }, function(err, users) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.send(users);
+    });
+  });
+
+  api.get('/documents/<id>', function(req, res) {
+    Document.find({
+      _id: id
+    }, function(err, documents) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.send(documents);
+    });
+  });
+
+  api.put('/documents/<id>', function(req, res) {
+    Document.update({
+      _id: id
+    }, function(err, documents) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.send(documents);
+    });
+  });
+
+  api.delete('/documents/<id>', function(req, res) {
+    Document.update({
+      _id: id
+    }, function(err, documents) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.send(documents);
+    });
+  });
+
+  api.get('/users/<id>/documents', function(req, res) {
+    Document.find({
+      ownerId: _id
+    }, function(err, documents) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      res.send(documents);
+    });
+  });
+
+  api.get('/users/logout', function(req, res) {
+    delete req.body.token;
+    res.redirect('/login');
+  });
 
   api.get('/me', function(req, res) {
     res.send(req.decoded);
@@ -184,46 +243,3 @@ module.exports = function(app, express) {
 
   return api;
 };
-
-//.............................................
-
-
-// app.route('/users/logout')
-//   .post(function(req, res) {
-//     res.send('Add a book');
-//   });
-
-// app.route('/users/<id>')
-//   .get(function(req, res) {
-//     res.send('Get a random book');
-//   })
-//   .put(function(req, res) {
-//     res.send('Update the book');
-//   })
-//   .delete(function(req, res) {
-//     res.send('Add a book');
-//   });
-
-// app.route('/users/<id>/documents')
-//   .get(function(req, res) {
-//     res.send('Get a random book');
-//   });
-
-// app.route('/documents/')
-//   .get(function(req, res) {
-//     res.send('Get a random book');
-//   })
-//   .post(function(req, res) {
-//     res.send('Add a book');
-//   });
-
-// app.route('/documents/<id>')
-//   .get(function(req, res) {
-//     res.send('Get a random book');
-//   })
-//   .put(function(req, res) {
-//     res.send('Update the book');
-//   })
-//   .delete(function(req, res) {
-//     res.send('Add a book');
-//   });
