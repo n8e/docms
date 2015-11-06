@@ -6,13 +6,13 @@ var Document = require('../../server/models/documents');
 
 // connect to the database
 mongoose.connect(config.database);
-mongoose.connection.db.dropDatabase(function(err) {
-  console.log('dropped collection %s, %s ', users, err);
-  users = '';
-  mongoose.connection.close();
-  initialized = false;
-  cb();
-});
+// mongoose.connection.db.dropDatabase(function(err) {
+//   console.log('dropped collection %s, %s ', users, err);
+//   users = '';
+//   mongoose.connection.close();
+//   initialized = false;
+//   cb();
+// });
 
 module.exports = function() {
   // to add a user to the db
