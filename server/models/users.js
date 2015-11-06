@@ -22,7 +22,8 @@ var UserSchema = new Schema({
     type: String,
     required: true,
     select: false
-  }
+  },
+  role: String
 });
 
 UserSchema.pre('save', function(next) {
