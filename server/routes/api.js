@@ -93,7 +93,6 @@ module.exports = function(app, express) {
   api.use(function(req, res, next) {
     console.log("Somebody just came to our app!");
     var token = req.body.token || req.params.token || req.headers['x-access-token'];
-    console.log(token);
     // check if token exists
     if (token) {
       jsonwebtoken.verify(token, secretKey, function(err, decoded) {
@@ -131,13 +130,12 @@ module.exports = function(app, express) {
 
   api.post('/documents', function(req, res) {
     var document = new Document({
-      ownerId: req.body.ownerId,
+      ownerId: req.decoded.id,
       title: req.body.title,
       content: req.body.content,
       dateCreated: req.body.dateCreated,
       lastModified: req.body.lastModified
     });
-    var token = createToken(user);
     document.save(function(err) {
       if (err) {
         res.send(err);
@@ -148,6 +146,28 @@ module.exports = function(app, express) {
         success: true,
         message: 'Document has been created!'
       });
+    });
+  });
+
+  api.get('/users/logout', function(req, res) {
+    delete req.headers['x-access-token'];
+
+    return res.status(200).json({
+      "message": "User has been successfully logged out"
+    });
+  });
+
+  api.get('/users/:id/documents', function(req, res) {
+    var id = req.param('id');
+    User.find({
+      ownerId: id
+    }, function(err, documents) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      console.log(documents);
+      res.json(documents);
     });
   });
 
@@ -204,18 +224,24 @@ module.exports = function(app, express) {
 
   api.delete('/users/:id', function(req, res) {
     var id = req.param('id');
-    User.remove({
+    User.findOneAndRemove({
       _id: id
     }, function(err, users) {
       if (err) {
-        res.send(err);
+        res.json(401, {
+          message: err
+        });
         return;
+      } else {
+        res.json(200, {
+          message: users
+        });
       }
-      res.send(users);
     });
   });
 
   api.get('/documents/:id', function(req, res) {
+    var id = req.param('id');
     Document.find({
       _id: id
     }, function(err, documents) {
@@ -228,44 +254,53 @@ module.exports = function(app, express) {
   });
 
   api.put('/documents/:id', function(req, res) {
-    Document.update({
-      _id: id
-    }, function(err, documents) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.send(documents);
-    });
+    var id = req.param('id');
+    Document.findOneAndUpdate({
+        _id: id
+      }, {
+        ownerId: req.user.id,
+        title: req.body.title,
+        content: req.body.content,
+        dateCreated: req.body.dateCreated,
+        lastModified: req.body.lastModified
+      }, {
+        ownerId: req.body.user.id,
+        title: req.body.title,
+        content: req.body.content,
+        dateCreated: req.body.dateCreated,
+        lastModified: req.body.lastModified
+      },
+
+      function(err, documents) {
+        if (err) {
+          res.send(err);
+          return;
+        } else {
+          // res.send(users);
+          res.json({
+            success: true,
+            message: "Successfully updated Document!"
+          });
+        }
+      });
   });
 
   api.delete('/documents/:id', function(req, res) {
-    Document.update({
+    var id = req.param('id');
+    Document.findOneAndRemove({
       _id: id
     }, function(err, documents) {
       if (err) {
-        res.send(err);
+        res.json(401, {
+          message: err
+        });
         return;
+      } else {
+        res.json(200, {
+          message: documents
+        });
       }
-      res.send(documents);
     });
-  });
-
-  api.get('/users/:id/documents', function(req, res) {
-    Document.find({
-      ownerId: _id
-    }, function(err, documents) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.send(documents);
-    });
-  });
-
-  api.get('/users/logout', function(req, res) {
-    delete req.params;
-    res.redirect('/login');
   });
 
   api.get('/me', function(req, res) {
