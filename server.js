@@ -34,7 +34,8 @@ app.use('/api', api);
 
 
 app.get('*', function(req, res) {
-  res.sendFile(__dirname + '/public/views/index.html');
+  res.send('System Under Construction...');
+  // res.sendFile(__dirname + '/public/views/index.html');
 });
 
 http.listen(config.port, function(err) {
