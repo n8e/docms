@@ -1,4 +1,4 @@
-mongomo// get the required models
+// get the required models
 var config = require('../../server/config/config');
 var mongoose = require('mongoose');
 var User = require('../../server/models/users');
