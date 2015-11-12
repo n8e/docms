@@ -62,6 +62,7 @@ module.exports = function(app, express) {
     User.findOne({
       username: req.body.username
     }).select('name username password').exec(function(err, user) {
+      console.log("From BEND: ",req.body);
       if (err) throw err;
 
       if (!user) {

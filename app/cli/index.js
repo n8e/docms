@@ -20,7 +20,7 @@ vorpal
             console.log("You have successfully logged in.");
             callback();
           } else {
-            console.log("There was a problem logging you in.\n"+err);
+            console.log("There was a problem logging you in.\n"+err+'\n'+res.body.message);
             callback();
           }
         });
