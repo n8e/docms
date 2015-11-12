@@ -18,7 +18,7 @@ There is a gulpfile to automate these tasks so thst to run the project, you only
 
 We use the built in `curl` application to make http requests and get responses.
 To access the default page when at localhost, use
-    `curl --verbose http://localhost:3000`
+    `curl --verbose http://localhost:3000` or `curl --request  GET "http://localhost:3000"`
     This returns the default server response.
 
 To login you user `natemmartin` password `12345`, use
