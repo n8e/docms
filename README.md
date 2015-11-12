@@ -27,3 +27,4 @@ To login you user `natemmartin` password `12345`, use
 This user needs to have signed up first. To do this for user called _Fred Quimby_ , use
     `curl --data "firstname=Fred&lastname=Quimby&username=fquimby&password=12345&role=User&email=fquimby@cartoons.net" http://localhost:3000/api/users`
 
+curl --data “firstname=Jason&lastname=Bourne&username=jb&password=12345&role=admin&email=jbourne@ultimatum.gov" http://localhost:3000/api/users

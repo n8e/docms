@@ -42,7 +42,7 @@ module.exports = function() {
   this.getAllUsers = function() {
     return User.find({}, function(err, users) {
       if (err) return console.error(err);
-      console.log(users + " Total: " + users.length + " users.");
+      return (users + " Total: " + users.length + " users.");
     });
   };
 

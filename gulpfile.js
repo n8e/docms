@@ -15,7 +15,7 @@ gulp.task('test', function () {
     }));
 });
 
-gulp.task('default', ['develop', 'test'], function(){
+gulp.task('default', ['test', 'develop'], function(){
   gulp.watch("server.js", ['develop', 'default']);
   gulp.watch("./tests/documentManagerSpec.js", ['test', 'default']);
 });

@@ -65,13 +65,13 @@ module.exports = function(app, express) {
       if (err) throw err;
 
       if (!user) {
-        res.send({
+        res.status(500).send({
           message: "User doesnt exist"
         });
       } else if (user) {
         var validPassword = user.comparePassword(req.body.password);
         if (!validPassword) {
-          res.send({
+          res.status(500).send({
             message: "Invalid Password"
           });
         } else {
