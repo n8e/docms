@@ -14,3 +14,16 @@ To run the tests, you'll require to install `jasmine-node`, as `npm install jasm
 There is a gulpfile to automate these tasks so thst to run the project, you only need to run `mongod` and `gulp` on the console.
 
 
+###Logging in through the Command-line
+
+We use the built in `curl` application to make http requests and get responses.
+To access the default page when at localhost, use
+    `curl --verbose http://localhost:3000`
+    This returns the default server response.
+
+To login you user `natemmartin` password `12345`, use
+    `curl --data "username=natemmartin&password=12345" http://localhost:3000/api/users/login`
+
+This user needs to have signed up first. To do this for user called _Fred Quimby_ , use
+    `curl --data "firstname=Fred&lastname=Quimby&username=fquimby&password=12345&role=User&email=fquimby@cartoons.net" http://localhost:3000/api/users`
+
