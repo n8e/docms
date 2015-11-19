@@ -62,7 +62,7 @@ module.exports = function(app, express) {
     User.findOne({
       username: req.body.username
     }).select('name username password').exec(function(err, user) {
-      console.log("From BEND: ",req.body);
+      // console.log("From BEND: ",req.body);
       if (err) throw err;
 
       if (!user) {
@@ -181,7 +181,7 @@ module.exports = function(app, express) {
         res.send(err);
         return;
       }
-      res.send(users);
+      res.json(users);
     });
   });
 
