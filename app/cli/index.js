@@ -2,10 +2,11 @@ var vorpal = require('vorpal')(),
   inquirer = require("inquirer"),
   prompt = require('prompt'),
   request = require('superagent');
+  User = require('../../server/models/users');
 
 prompt.start();
 
-var authToken;
+var authToken, userId;
 
 vorpal
   .command('login', "Logs in an existing user")
@@ -22,6 +23,7 @@ vorpal
           if (!err) {
             console.log("You have successfully logged in.");
             authToken = res.body.token;
+            userId = res.body.id;
             callback();
           } else {
             console.log("There was a problem logging you in.\n" + '\n' + res.body.message);
@@ -93,9 +95,7 @@ vorpal
   .command('write-document', "Add a new document")
   .action(function(args, callback) {
     prompt.get(['title', 'content'], function(err, result) {
-      result.push({'dateCreated': Date.now});
-      result.push({'lastModified': Date.now});
-      result.push({'ownerId': res.body})
+      result.ownerId = userId;
       if (err) {
         return onErr(err);
       }

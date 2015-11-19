@@ -4,12 +4,12 @@ var mongoose = require('mongoose'),
 
 // create a schema
 var DocumentSchema = new Schema({
-  id: Number,
-  ownerId: Number,
+  id: String,
+  ownerId: String,
   title: String,
   content: String,
-  dateCreated: Date,
-  lastModified: Date
+  dateCreated: {type: Date, default:Date.now()},
+  lastModified: {type: Date, default:Date.now()}
 });
 
 

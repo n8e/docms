@@ -80,6 +80,7 @@ module.exports = function(app, express) {
           var token = createToken(user);
 
           res.json({
+            id: user._id,
             success: true,
             message: "Successfully logged in!",
             token: token
@@ -129,13 +130,18 @@ module.exports = function(app, express) {
     });
   });
 
+  api.get('/users/logout', function(req, res) {
+    delete req.headers['x-access-token'];
+    return res.status(200).json({
+      "message": "User has been successfully logged out"
+    });
+  });
+
   api.post('/documents', function(req, res) {
     var document = new Document({
       ownerId: req.decoded.id,
       title: req.body.title,
-      content: req.body.content,
-      dateCreated: req.body.dateCreated,
-      lastModified: req.body.lastModified
+      content: req.body.content
     });
     document.save(function(err) {
       if (err) {
@@ -147,14 +153,6 @@ module.exports = function(app, express) {
         success: true,
         message: 'Document has been created!'
       });
-    });
-  });
-
-  api.get('/users/logout', function(req, res) {
-    delete req.headers['x-access-token'];
-
-    return res.status(200).json({
-      "message": "User has been successfully logged out"
     });
   });
 
