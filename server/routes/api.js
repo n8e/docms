@@ -1,51 +1,9 @@
-var User = require('../models/users');
-var Document = require('../models/documents');
-var config = require('../config/config');
-
-var secretKey = config.secretKey;
-var jsonwebtoken = require('jsonwebtoken');
-
-
-function createToken(user) {
-  var token = jsonwebtoken.sign({
-    id: user._id,
-    name: user.name,
-    username: user.username
-  }, secretKey, {
-    expiresInMinute: 1440
-  });
-  return token;
-}
-
+var docManager = require('../controllers/documentManager');
 
 module.exports = function(app, express) {
   var api = express.Router();
 
-  api.post('/users', function(req, res) {
-    var user = new User({
-      name: {
-        first: req.body.firstname,
-        last: req.body.lastname
-      },
-      email: req.body.email,
-      username: req.body.username,
-      password: req.body.password,
-      role: req.body.role
-    });
-    var token = createToken(user);
-    user.save(function(err) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-
-      res.json({
-        success: true,
-        message: 'User has been created!',
-        token: token
-      });
-    });
-  });
+  api.post('/users', docManager.createUser);
 
 
   api.get('/users', function(req, res) {
