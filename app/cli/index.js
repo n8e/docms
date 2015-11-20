@@ -46,7 +46,6 @@ vorpal
         .end(function(err, res) {
           if (!err) {
             console.log("You have successfully signed up.");
-            setToken();
             callback();
           } else {
             console.log("There was a problem signing you up.\n" + '\n' + res.body.message);
