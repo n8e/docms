@@ -1,5 +1,24 @@
-var documentManager = require('../app/directives/documentManager');
+var documentManager = require('../server/controllers/documentManager'),
+  express = require('express');
+
 var dm = new documentManager();
+var app = express();
+
+app.get('/user', function(req, res) {
+  res.send(200, {
+    name: 'toto'
+  });
+});
+
+describe('GET /user', function(){
+  it('should respond with json', function(done){
+    request(app)
+      .get('/user')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', 'json')
+      .expect(200, done);
+  });
+});
 
 describe("User", function() {
   it("validates that a new user created is unique", function() {

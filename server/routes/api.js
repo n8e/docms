@@ -1,118 +1,25 @@
-var docManager = require('../controllers/documentManager');
+var docManager = require('../controllers/documentManager'),
+  auth = require('../controllers/auth');
 
 module.exports = function(app, express) {
   var api = express.Router();
 
   api.post('/users', docManager.createUser);
 
+  api.get('/users', docManager.getAllUsers);
 
-  api.get('/users', function(req, res) {
-    User.find({}, function(err, users) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.json(users);
-    });
-  });
+  api.post('/users/login', docManager.login);
 
-  api.post('/users/login', function(req, res) {
-    User.findOne({
-      username: req.body.username
-    }).select('name username password').exec(function(err, user) {
-      // console.log("From BEND: ",req.body);
-      if (err) throw err;
-
-      if (!user) {
-        res.status(500).send({
-          message: "User doesnt exist"
-        });
-      } else if (user) {
-        var validPassword = user.comparePassword(req.body.password);
-        if (!validPassword) {
-          res.status(500).send({
-            message: "Invalid Password"
-          });
-        } else {
-          ///// token
-          var token = createToken(user);
-
-          res.json({
-            id: user._id,
-            success: true,
-            message: "Successfully logged in!",
-            token: token
-          });
-        }
-      }
-    });
-  });
-
-  // ______________________________________________________
   // middleware
-  api.use(function(req, res, next) {
-    console.log("Somebody just came to our app!");
-    var token = req.body.token || req.params.token || req.headers['x-access-token'];
-    // check if token exists
-    if (token) {
-      jsonwebtoken.verify(token, secretKey, function(err, decoded) {
-        if (err) {
-          res.status(403).send({
-            success: false,
-            message: "Failed to authenticate user"
-          });
-        } else {
-          req.decoded = decoded;
-          next();
-        }
-      });
-    } else {
-      res.status(403).send({
-        success: false,
-        message: "No token provided!"
-      });
-    }
-  });
+  api.use(auth.authenticate);
 
-  // ______________________________________________________
   // Destination B, checking for a legitimate token
 
+  api.get('/documents', docManager.getAllDocuments);
 
-  api.get('/documents', function(req, res) {
-    Document.find({}, function(err, documents) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.json(documents);
-    });
-  });
+  api.get('/users/logout', docManager.logout);
 
-  api.get('/users/logout', function(req, res) {
-    delete req.headers['x-access-token'];
-    return res.status(200).json({
-      "message": "User has been successfully logged out"
-    });
-  });
-
-  api.post('/documents', function(req, res) {
-    var document = new Document({
-      ownerId: req.decoded.id,
-      title: req.body.title,
-      content: req.body.content
-    });
-    document.save(function(err) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-
-      res.json({
-        success: true,
-        message: 'Document has been created!'
-      });
-    });
-  });
+  api.post('/documents', docManager.createDocument);
 
   api.get('/users/:id/documents', function(req, res) {
     var id = req.param('id');
@@ -128,137 +35,17 @@ module.exports = function(app, express) {
     });
   });
 
-  api.get('/users/:id', function(req, res) {
-    var id = req.param('id');
-    User.find({
-      _id: id
-    }, function(err, users) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.json(users);
-    });
-  });
+  api.get('/users/:id', docManager.getUser);
 
-  api.put('/users/:id', function(req, res) {
-    var id = req.param('id');
-    User.findOneAndUpdate({
-        _id: id
-      }, {
-        name: {
-          first: req.body.firstname,
-          last: req.body.lastname
-        },
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        role: req.body.role
-      }, {
-        name: {
-          first: req.body.firstname,
-          last: req.body.lastname
-        },
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        role: req.body.role
-      },
+  api.put('/documents/:id', docManager.updateDocument);
 
-      function(err, users) {
-        if (err) {
-          res.send(err);
-          return;
-        } else {
-          // res.send(users);
-          res.json({
-            success: true,
-            message: "Successfully updated User!"
-          });
-        }
-      });
-  });
+  api.put('/users/:id', docManager.updateUser);
 
-  api.delete('/users/:id', function(req, res) {
-    var id = req.param('id');
-    User.findOneAndRemove({
-      _id: id
-    }, function(err, users) {
-      if (err) {
-        res.json(401, {
-          message: err
-        });
-        return;
-      } else {
-        res.json(200, {
-          message: users
-        });
-      }
-    });
-  });
+  api.delete('/users/:id', docManager.deleteUser);
 
-  api.get('/documents/:id', function(req, res) {
-    var id = req.param('id');
-    Document.find({
-      _id: id
-    }, function(err, documents) {
-      if (err) {
-        res.send(err);
-        return;
-      }
-      res.send(documents);
-    });
-  });
+  api.get('/documents/:id', docManager.getDocument);
 
-  api.put('/documents/:id', function(req, res) {
-    var id = req.param('id');
-    Document.findOneAndUpdate({
-        _id: id
-      }, {
-        ownerId: req.user.id,
-        title: req.body.title,
-        content: req.body.content,
-        dateCreated: req.body.dateCreated,
-        lastModified: req.body.lastModified
-      }, {
-        ownerId: req.body.user.id,
-        title: req.body.title,
-        content: req.body.content,
-        dateCreated: req.body.dateCreated,
-        lastModified: req.body.lastModified
-      },
-
-      function(err, documents) {
-        if (err) {
-          res.send(err);
-          return;
-        } else {
-          // res.send(users);
-          res.json({
-            success: true,
-            message: "Successfully updated Document!"
-          });
-        }
-      });
-  });
-
-  api.delete('/documents/:id', function(req, res) {
-    var id = req.param('id');
-    Document.findOneAndRemove({
-      _id: id
-    }, function(err, documents) {
-      if (err) {
-        res.json(401, {
-          message: err
-        });
-        return;
-      } else {
-        res.json(200, {
-          message: documents
-        });
-      }
-    });
-  });
+  api.delete('/documents/:id', docManager.deleteDocument);
 
   api.get('/me', function(req, res) {
     res.send(req.decoded);
